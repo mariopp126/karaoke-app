@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tablero de Solicitudes de Karaoke</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- 2. MÓDULO DE CONFIGURACIÓN DE TAILWIND (Separación de Configuración) -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+            colors: {
+              // Paleta inspirada en el branding del TSE (Verde Olivo y Verde Claro)
+              'primary-dark': '#418349', // Verde olivo oscuro
+              'primary-light': '#668351', // Verde olivo medio
+              'accent-green': '#C7D690', // Verde muy claro/lima
+              'background-dark': '#0f172a', // Fondo muy oscuro
+              'card-dark': '#1e293b', // Fondo de tarjeta
+              'error-red': '#dc2626', // Rojo para errores
+            },
+          }
+        }
+      }
+    </script>
+</head>
+<body class="bg-background-dark font-sans">
+    <div id="root">
+        <!-- El componente React se renderizará aquí -->
+    </div>
+    <script type="module" src="./src/main.jsx"></script>
+</body>
+</html>
