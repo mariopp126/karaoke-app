@@ -10,14 +10,14 @@ const IconoMicrofono = ({ size, className }) => (
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className={className}
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class={className}
   >
-    <path d="m12 8-9 5 9 5 9-5Z" />
-    <path d="M11 12v7" />
-    <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M15 12.9a5 5 0 1 0 -3.902 -3.9" />
+    <path d="M15 12.9l-3.902 -3.899l-7.513 8.584a2 2 0 1 0 2.827 2.83l8.588 -7.515z" />
   </svg>
 );
 
@@ -47,18 +47,17 @@ const IconoListaMusica = ({ size, className }) => (
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className={className}
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class={className}
   >
-    <path d="M21 15V6" />
-    <path d="M18.5 2.5V20" />
-    <path d="M17 21v-3" />
-    <path d="M17 5v3" />
-    <circle cx="11.5" cy="17.5" r="3.5" />
-    <path d="M8 17.5H4" />
-    <path d="M15 17.5H15" />
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M14 17m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+    <path d="M17 17v-13h4" />
+    <path d="M13 5h-10" />
+    <path d="M3 9l10 0" />
+    <path d="M9 13h-6" />
   </svg>
 );
 
@@ -115,6 +114,7 @@ const ModalConfirmacion = ({ show, onConfirm, onCancel, message }) => {
 const App = () => {
   const [requests, setRequests] = useState([]);
   const [songTitle, setSongTitle] = useState("");
+  const [artist, setArtist] = useState(""); // Nuevo estado para el artista
   const [requesterName, setRequesterName] = useState("");
   const [formError, setFormError] = useState("");
 
@@ -126,9 +126,9 @@ const App = () => {
     e.preventDefault();
     setFormError("");
 
-    if (!songTitle.trim() || !requesterName.trim()) {
+    if (!songTitle.trim() || !artist.trim() || !requesterName.trim()) {
       setFormError(
-        "Por favor, ingresa tanto el título de la canción como tu nombre."
+        "Por favor, completa todos los campos: título de la canción, artista y tu nombre."
       );
       return;
     }
@@ -136,6 +136,7 @@ const App = () => {
     const newRequest = {
       id: crypto.randomUUID(),
       songTitle: songTitle.trim(),
+      artist: artist.trim(), // Agregamos el artista al objeto
       requesterName: requesterName.trim(),
       timestamp: Date.now(),
     };
@@ -143,6 +144,7 @@ const App = () => {
     setRequests((prevRequests) => [...prevRequests, newRequest]);
 
     setSongTitle("");
+    setArtist("");
     setRequesterName("");
   };
 
@@ -202,14 +204,32 @@ const App = () => {
                 htmlFor="songTitle"
                 className="block text-sm font-medium text-gray-300 mb-2"
               >
-                Título de la Canción / Artista
+                Título de la Canción
               </label>
               <input
                 id="songTitle"
                 type="text"
                 value={songTitle}
                 onChange={(e) => setSongTitle(e.target.value)}
-                placeholder="Ej: Happy Birthday - Stevie Wonder"
+                placeholder="Ej: Happy Birthday"
+                className="w-full px-4 py-3 bg-gray-700 border border-primary-dark rounded-lg focus:ring-accent-green focus:border-accent-green text-white placeholder-gray-400"
+                required
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="artist"
+                className="block text-sm font-medium text-gray-300 mb-2"
+              >
+                Artista
+              </label>
+              <input
+                id="artist"
+                type="text"
+                value={artist}
+                onChange={(e) => setArtist(e.target.value)}
+                placeholder="Ej: Stevie Wonder"
                 className="w-full px-4 py-3 bg-gray-700 border border-primary-dark rounded-lg focus:ring-accent-green focus:border-accent-green text-white placeholder-gray-400"
                 required
               />
@@ -277,6 +297,10 @@ const App = () => {
                       {index + 1}. {req.songTitle}
                     </p>
                     <p className="text-sm text-gray-400 mt-1">
+                      Artista:{" "}
+                      <span className="text-primary-light">{req.artist}</span>
+                    </p>
+                    <p className="text-sm text-gray-400">
                       Solicitado por:{" "}
                       <span className="font-medium text-accent-green">
                         {req.requesterName}
@@ -292,7 +316,7 @@ const App = () => {
                   </button>
                 </div>
               ))
-            )}
+            )};
           </div>
         </div>
       </div>
