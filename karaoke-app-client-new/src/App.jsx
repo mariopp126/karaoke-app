@@ -114,7 +114,7 @@ const ModalConfirmacion = ({ show, onConfirm, onCancel, message }) => {
 const App = () => {
   const [requests, setRequests] = useState([]);
   const [songTitle, setSongTitle] = useState("");
-  const [artist, setArtist] = useState(""); // Nuevo estado para el artista
+  const [artist, setArtist] = useState("");
   const [requesterName, setRequesterName] = useState("");
   const [formError, setFormError] = useState("");
 
