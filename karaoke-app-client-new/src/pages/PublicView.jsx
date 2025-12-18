@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FormSolicitud } from "../components/Karaoke/FormSolicitud";
 import { ColaSolicitudes } from "../components/Karaoke/ColaSolicitudes";
 import { IconoMicrofono } from "../components/Icons/icons";
@@ -11,6 +11,12 @@ function PublicView() {
     karaokeService.addRequest(newRequest);
     setRequests(karaokeService.getRequests());
   }
+
+  // Cargar solicitudes al montar el componente
+    useEffect(() => {
+      const data = karaokeService.getRequests(); //
+      setRequests(data);
+    }, []);
 
   return (
     <div className="min-h-screen p-4 sm:p-8">
