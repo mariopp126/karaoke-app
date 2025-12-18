@@ -1,7 +1,12 @@
 // This simulates a database. For now, it uses memory.
 // Later, replace these with fetch() or firebase calls.
 
-let requests = [];
+// src/services/api.js mejorado para persistencia local
+let requests = JSON.parse(localStorage.getItem('karaoke_db')) || [];
+
+const saveToLocal = () => {
+  localStorage.setItem('karaoke_db', JSON.stringify(requests));
+};
 
 export const karaokeService = {
   getRequests: () => [...requests],
@@ -9,11 +14,13 @@ export const karaokeService = {
   addRequest: (song) => {
     const newReq = { ...song, id: crypto.randomUUID(), timestamp: Date.now() };
     requests.push(newReq);
+    saveToLocal(); // Guardar cambios
     return newReq;
   },
 
   deleteRequest: (id) => {
     requests = requests.filter(req => req.id !== id);
+    saveToLocal(); // Guardar cambios
     return true;
   }
 };
