@@ -6,41 +6,33 @@ import { IconoMicrofono, IconoListaMusica } from "../components/Icons/icons";
 
 const AdminDashboard = () => {
   const [requests, setRequests] = useState([]);
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [requestToDelete, setRequestToDelete] = useState(null);
 
   // Cargar solicitudes al montar el componente
   useEffect(() => {
-    const data = karaokeService.getRequests(); //
-    setRequests(data);
+    // Esto se conecta a Firebase y se queda escuchando
+    const unsubscribe = karaokeService.subscribeToRequests((data) => {
+      setRequests(data); // Se actualiza solo cuando alguien pide una canción
+    });
+
+    // Limpieza al salir de la página
+    return () => unsubscribe();
   }, []);
 
-  const openDeleteConfirmation = (id) => {
-    setRequestToDelete(id);
-    setShowConfirm(true);
-  };
-
-  const confirmDelete = () => {
-    // 1. Llamar al pseudo-backend para borrar
-    const success = karaokeService.deleteRequest(requestToDelete); //
-    
-    if (success) {
-      // 2. Actualizar la UI local
-      setRequests(karaokeService.getRequests()); //
+  const handleDelete = async (id) => {
+    if (window.confirm("¿Borrar canción?")) {
+      await karaokeService.deleteRequest(id);
+      
     }
-    
-    setShowConfirm(false);
-    setRequestToDelete(null);
   };
 
   return (
     <div className="min-h-screen p-4 sm:p-8">
-      <ModalConfirmacion
+      {/* <ModalConfirmacion
         show={showConfirm}
         onConfirm={confirmDelete}
         onCancel={() => setShowConfirm(false)}
         message="¿Confirmas que esta canción ya fue interpretada? Se eliminará de la lista."
-      />
+      /> */}
 
       <header className="text-center mb-10">
         <h1 className="text-4xl font-extrabold text-accent-green flex items-center justify-center gap-3">
@@ -54,7 +46,7 @@ const AdminDashboard = () => {
         {/* Reutilizamos tu componente de lista pasándole la función de borrar */}
         <ColaSolicitudes 
           requests={requests} 
-          onDeleteClick={openDeleteConfirmation} 
+          onDeleteClick={handleDelete} 
         >
             <button>Eliminar</button>
         </ColaSolicitudes>
