@@ -14,9 +14,14 @@ function PublicView() {
 
   // Cargar solicitudes al montar el componente
     useEffect(() => {
-      const data = karaokeService.getRequests(); //
-      setRequests(data);
-    }, []);
+    // En lugar de llamar a getRequests(), nos suscribimos
+    const unsubscribe = karaokeService.subscribeToRequests((data) => {
+      setRequests(data); // Firebase nos enviará la lista actualizada aquí
+    });
+
+    // Importante: cancelar la suscripción al cerrar el componente
+    return () => unsubscribe();
+  }, []);
 
   return (
     <div className="min-h-screen p-4 sm:p-8">

@@ -1,39 +1,43 @@
-// This simulates a database. For now, it uses memory.
-// Later, replace these with fetch() or firebase calls.
-
-// src/services/api.js mejorado para persistencia local
-let requests = JSON.parse(localStorage.getItem('karaoke_db')) || [];
-
-const saveToLocal = () => {
-  localStorage.setItem('karaoke_db', JSON.stringify(requests));
-};
+import { db, auth } from "./firebaseConfig";
+import { 
+  collection, 
+  addDoc, 
+  deleteDoc, 
+  doc, 
+  onSnapshot, 
+  query, 
+  orderBy 
+} from "firebase/firestore";
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
 
 export const karaokeService = {
-  getRequests: () => [...requests],
-  
-  addRequest: (song) => {
-    const newReq = { ...song, id: crypto.randomUUID(), timestamp: Date.now() };
-    requests.push(newReq);
-    saveToLocal(); // Guardar cambios
-    return newReq;
+  // Escucha cambios en tiempo real
+  subscribeToRequests: (callback) => {
+    const q = query(collection(db, "requests"), orderBy("timestamp", "asc"));
+    return onSnapshot(q, (snapshot) => {
+      const docs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      callback(docs);
+    }, (error) => {
+      console.error("Error al suscribirse a solicitudes:", error);
+    });
   },
 
-  deleteRequest: (id) => {
-    requests = requests.filter(req => req.id !== id);
-    saveToLocal(); // Guardar cambios
-    return true;
+  addRequest: async (song) => {
+    await addDoc(collection(db, "requests"), {
+      ...song,
+      timestamp: Date.now()
+    });
+  },
+
+  deleteRequest: async (id) => {
+    await deleteDoc(doc(db, "requests", id));
   }
 };
 
 export const authService = {
-  login: (password) => {
-    // Simple mock: check if password is 'admin123'
-    if (password === 'admin123') {
-      localStorage.setItem('isAdmin', 'true');
-      return true;
-    }
-    return false;
+  login: async (email, password) => {
+    return signInWithEmailAndPassword(auth, email, password);
   },
-  logout: () => localStorage.removeItem('isAdmin'),
-  isAuthenticated: () => localStorage.getItem('isAdmin') === 'true'
+  logout: () => signOut(auth),
+  onAuthStateChange: (callback) => onAuthStateChanged(auth, callback)
 };

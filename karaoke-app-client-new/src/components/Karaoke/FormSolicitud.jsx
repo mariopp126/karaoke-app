@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { IconoEnviar } from "../Icons/icons";
+import { karaokeService } from "../../services/api";
 
-export function FormSolicitud({ onAdd }) {
+export function FormSolicitud() {
   const [formData, setFormData] = useState({
     songTitle: "",
     artist: "",
@@ -10,31 +11,25 @@ export function FormSolicitud({ onAdd }) {
   const [formError, setFormError] = useState("");
 
   // Manejador de Envío
-  const handleSendRequest = (e) => {
-    e.preventDefault();
-    setFormError("");
-
-    if (!formData.songTitle.trim() || !formData.artist.trim() || !formData.requesterName.trim()) {
-      setFormError(
-        "Por favor, completa todos los campos: título de la canción, artista y tu nombre."
-      );
-      return;
+  const handleSendRequest = async (formData) => {
+    try {
+      // CAMBIO: Llamada asíncrona a Firebase
+      await karaokeService.addRequest({
+        songTitle: formData.songTitle,
+        artist: formData.artist,
+        requesterName: formData.requesterName
+      });
+      console.alert("Solicitud enviada con éxito.");
+      // Limpia tus inputs aquí
+      setFormData({
+        songTitle: "",
+        artist: "",
+        requesterName: "",
+      });
+    } catch (error) {
+      console.alert("Error enviando:", error);
+      setFormError("Hubo un error al enviar la solicitud.");
     }
-
-    const newRequest = {
-      id: crypto.randomUUID(),
-      songTitle: formData.songTitle.trim(),
-      artist: formData.artist.trim(), // Agregamos el artista al objeto
-      requesterName: formData.requesterName.trim(),
-      timestamp: Date.now(),
-    };
-
-    onAdd(newRequest);
-    setFormData({
-      songTitle: "",
-      artist: "",
-      requesterName: ""
-    });
   };
 
   return (
