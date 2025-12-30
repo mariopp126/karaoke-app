@@ -46,10 +46,8 @@ const AdminDashboard = () => {
         {/* Reutilizamos tu componente de lista pasándole la función de borrar */}
         <ColaSolicitudes 
           requests={requests} 
-          onDeleteClick={handleDelete} 
-        >
-            <button>Eliminar</button>
-        </ColaSolicitudes>
+          onDelete={handleDelete} 
+        />
       </div>
     </div>
   );

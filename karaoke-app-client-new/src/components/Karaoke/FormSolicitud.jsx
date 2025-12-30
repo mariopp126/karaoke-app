@@ -11,7 +11,9 @@ export function FormSolicitud() {
   const [formError, setFormError] = useState("");
 
   // Manejador de Envío
-  const handleSendRequest = async (formData) => {
+  const handleSendRequest = async (e) => {
+    e.preventDefault();
+    setFormError("");
     try {
       // CAMBIO: Llamada asíncrona a Firebase
       await karaokeService.addRequest({
@@ -19,7 +21,7 @@ export function FormSolicitud() {
         artist: formData.artist,
         requesterName: formData.requesterName
       });
-      console.alert("Solicitud enviada con éxito.");
+      // alert("Solicitud enviada con éxito.");
       // Limpia tus inputs aquí
       setFormData({
         songTitle: "",
@@ -27,8 +29,8 @@ export function FormSolicitud() {
         requesterName: "",
       });
     } catch (error) {
-      console.alert("Error enviando:", error);
-      setFormError("Hubo un error al enviar la solicitud.");
+      console.error("Error enviando:", error);
+      setFormError("Hubo un error al enviar la solicitud. Intenta nuevamente.");
     }
   };
 

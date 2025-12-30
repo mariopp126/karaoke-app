@@ -6,7 +6,8 @@ import {
   doc, 
   onSnapshot, 
   query, 
-  orderBy 
+  orderBy,
+  serverTimestamp 
 } from "firebase/firestore";
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
 
@@ -22,11 +23,21 @@ export const karaokeService = {
     });
   },
 
-  addRequest: async (song) => {
-    await addDoc(collection(db, "requests"), {
-      ...song,
-      timestamp: Date.now()
-    });
+  // src/services/api.js
+addRequest: async (song) => {
+    try {
+      // Usamos await para esperar la respuesta de Firebase
+      const docRef = await addDoc(collection(db, "requests"), {
+        ...song,
+        // Es mejor usar el tiempo del servidor que el del cliente
+        timestamp: serverTimestamp() 
+      });
+      console.log("¡Éxito! Canción guardada con ID:", docRef.id);
+      return docRef.id;
+    } catch (error) {
+      console.error("Error real de Firebase al guardar:", error);
+      throw error;
+    }
   },
 
   deleteRequest: async (id) => {

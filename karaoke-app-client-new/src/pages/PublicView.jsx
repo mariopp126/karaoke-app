@@ -7,9 +7,14 @@ import { karaokeService } from "../services/api";
 function PublicView() {
   const [requests, setRequests] = useState([]);
 
-  const addRequest = (newRequest) => {
-    karaokeService.addRequest(newRequest);
-    setRequests(karaokeService.getRequests());
+  const addRequest = async (newRequest) => {
+    try {
+      await karaokeService.addRequest(newRequest);
+      // No necesitas setRequests aquí porque el listener de subscribeToRequests
+      // ya actualizará el estado automáticamente
+    } catch (error) {
+      console.error("Error al agregar solicitud:", error);
+    }
   }
 
   // Cargar solicitudes al montar el componente

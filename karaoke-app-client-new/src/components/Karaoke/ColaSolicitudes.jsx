@@ -1,7 +1,6 @@
 import { IconoListaMusica, IconoBasura } from "../Icons/icons";
 
-export function ColaSolicitudes({ requests }) {
-  
+export function ColaSolicitudes({ requests, onDelete }) {
   return (
     <div className="bg-card-dark p-6 sm:p-8 rounded-xl shadow-2xl">
       <h2 className="text-3xl font-bold mb-6 text-white border-b border-error-red pb-3 flex items-center gap-2">
@@ -39,6 +38,15 @@ export function ColaSolicitudes({ requests }) {
                     {req.requesterName}
                   </span>
                 </p>
+                {onDelete && (
+                  <button
+                    onClick={() => onDelete(req.id)}
+                    className="mt-2 flex items-center text-sm text-error-red hover:text-red-400 transition-colors"
+                  >
+                    <IconoBasura size={16} className="mr-1" />
+                    Eliminar
+                  </button>
+                )}
               </div>
             </div>
           ))
